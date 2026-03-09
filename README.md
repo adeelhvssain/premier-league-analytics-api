@@ -1,9 +1,5 @@
 # Premier League Analytics API
 
-This is a simple FastAPI starter for a university coursework project.
-It provides a clean, minimal structure that can be extended later with
-PostgreSQL, SQLAlchemy models, and feature routers.
-
 ## Project structure
 
 - `app/main.py` – FastAPI app creation and route definitions
