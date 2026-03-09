@@ -5,8 +5,10 @@ from fastapi import FastAPI
 from . import config
 from .database import engine
 from .models.base import Base
+from .models.player import Player
 from .models.team import Team
 from .routers.teams import router as teams_router
+from .routers.players import router as players_router
 
 
 def create_app() -> FastAPI:
@@ -39,6 +41,7 @@ def create_app() -> FastAPI:
 
     # Extension point:
     app.include_router(teams_router)
+    app.include_router(players_router)
 
     return app
 
