@@ -10,6 +10,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .player import Player
+    from .match import Match
 
 
 class Team(Base):
@@ -25,3 +26,13 @@ class Team(Base):
     founded_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
     players: Mapped[List["Player"]] = relationship(back_populates="team")
+    home_matches: Mapped[List["Match"]] = relationship(
+        "Match",
+        back_populates="home_team",
+        foreign_keys="[Match.home_team_id]",
+    )
+    away_matches: Mapped[List["Match"]] = relationship(
+        "Match",
+        back_populates="away_team",
+        foreign_keys="[Match.away_team_id]",
+    )
