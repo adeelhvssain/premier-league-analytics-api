@@ -3,6 +3,10 @@
 from fastapi import FastAPI
 
 from . import config
+from .database import engine
+from .models.base import Base
+from .models.team import Team
+from .routers.teams import router as teams_router
 
 
 def create_app() -> FastAPI:
@@ -28,10 +32,13 @@ def create_app() -> FastAPI:
         """Liveness endpoint for basic service checks."""
         return {"status": "ok", "environment": config.ENVIRONMENT}
 
+    @app.on_event("startup")
+    def on_startup() -> None:
+        """Create all tables when the app starts."""
+        Base.metadata.create_all(bind=engine)
+
     # Extension point:
-    # Add routers here as the project grows.
-    # from .routers import teams, fixtures
-    # app.include_router(teams.router, prefix=f"{config.API_PREFIX}/teams", tags=["teams"])
+    app.include_router(teams_router)
 
     return app
 
