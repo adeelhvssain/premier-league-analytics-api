@@ -11,6 +11,7 @@ from .base import Base
 if TYPE_CHECKING:
     from .player import Player
     from .match import Match
+    from .match_event import MatchEvent
 
 
 class Team(Base):
@@ -36,3 +37,4 @@ class Team(Base):
         back_populates="away_team",
         foreign_keys="[Match.away_team_id]",
     )
+    events: Mapped[List["MatchEvent"]] = relationship(back_populates="team")
