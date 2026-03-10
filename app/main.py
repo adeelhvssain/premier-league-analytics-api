@@ -5,12 +5,14 @@ from fastapi import FastAPI
 from . import config
 from .database import engine
 from .models.base import Base
+from .models.match import Match
+from .models.match_event import MatchEvent
 from .models.player import Player
 from .models.team import Team
-from .models.match import Match
-from .routers.teams import router as teams_router
-from .routers.players import router as players_router
 from .routers.matches import router as matches_router
+from .routers.players import router as players_router
+from .routers.teams import router as teams_router
+from .routers.match_events import router as match_events_router
 
 
 def create_app() -> FastAPI:
@@ -45,6 +47,7 @@ def create_app() -> FastAPI:
     app.include_router(teams_router)
     app.include_router(players_router)
     app.include_router(matches_router)
+    app.include_router(match_events_router)
 
     return app
 
