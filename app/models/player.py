@@ -10,6 +10,7 @@ from .base import Base
 if TYPE_CHECKING:
     from .team import Team
     from .match_event import MatchEvent
+    from .player_season_stats import PlayerSeasonStats
 
 
 class Player(Base):
@@ -26,3 +27,4 @@ class Player(Base):
 
     team: Mapped["Team"] = relationship(back_populates="players")
     events: Mapped[List["MatchEvent"]] = relationship(back_populates="player")
+    season_stats: Mapped[List["PlayerSeasonStats"]] = relationship(back_populates="player")
