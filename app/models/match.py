@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from typing import TYPE_CHECKING
+from typing import List
 
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -10,6 +11,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .team import Team
+    from .match_event import MatchEvent
 
 
 class Match(Base):
@@ -32,6 +34,7 @@ class Match(Base):
     away_team: Mapped["Team"] = relationship(
         "Team", foreign_keys=[away_team_id], back_populates="away_matches"
     )
+    events: Mapped[List["MatchEvent"]] = relationship(back_populates="match")
 
     __table_args__ = (
         CheckConstraint("home_score >= 0", name="ck_home_score_non_negative"),

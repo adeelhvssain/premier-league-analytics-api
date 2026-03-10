@@ -1,6 +1,6 @@
 """Player model."""
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -9,6 +9,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .team import Team
+    from .match_event import MatchEvent
 
 
 class Player(Base):
@@ -24,3 +25,4 @@ class Player(Base):
     team_id: Mapped[int] = mapped_column(ForeignKey("teams.id"), nullable=False)
 
     team: Mapped["Team"] = relationship(back_populates="players")
+    events: Mapped[List["MatchEvent"]] = relationship(back_populates="player")
