@@ -31,3 +31,18 @@ dist/
 *.log
 
 node_modules/
+
+# Frontend build/cache
+frontend/.vite/
+frontend/dist/
+
+# Node logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Python coverage artifacts
+.coverage
+htmlcov/
+coverage/
