@@ -8,6 +8,7 @@ from .models.base import Base
 from .models.player import Player
 from .models.player_season_stats import PlayerSeasonStats
 from .models.team import Team
+from .routers.analytics import router as analytics_router
 from .routers.players import router as players_router
 from .routers.teams import router as teams_router
 from .routers.player_season_stats import router as player_season_stats_router
@@ -45,6 +46,7 @@ def create_app() -> FastAPI:
     app.include_router(teams_router)
     app.include_router(players_router)
     app.include_router(player_season_stats_router)
+    app.include_router(analytics_router)
 
     return app
 
