@@ -1,6 +1,7 @@
 """Application entrypoint for the FastAPI API."""
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import config
 from .database import engine
@@ -21,6 +22,14 @@ def create_app() -> FastAPI:
         title=config.APP_NAME,
         version=config.APP_VERSION,
         debug=config.DEBUG,
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     @app.get("/")
