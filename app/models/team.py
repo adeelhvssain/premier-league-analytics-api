@@ -2,7 +2,7 @@
 
 from typing import List, Optional, TYPE_CHECKING
 
-from sqlalchemy import Integer, String
+from sqlalchemy import Boolean, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm import relationship
 
@@ -23,5 +23,8 @@ class Team(Base):
     city: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
     stadium: Mapped[Optional[str]] = mapped_column(String(160), nullable=True)
     founded_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    is_user_created: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=True
+    )
 
     players: Mapped[List["Player"]] = relationship(back_populates="team")

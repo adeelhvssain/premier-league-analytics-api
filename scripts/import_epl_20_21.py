@@ -4,6 +4,8 @@ from pathlib import Path
 import sys
 
 import pandas as pd
+from sqlalchemy import inspect
+from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 # Allow running this file directly with `python scripts/import_epl_20_21.py`
@@ -73,8 +75,17 @@ def _make_unique_short_name(session, club_name: str) -> str:
 
 
 def _reset_database() -> None:
-    """Drop and recreate all tables to start with a clean database."""
-    Base.metadata.drop_all(bind=engine)
+    """Drop all tables so import starts with a clean database."""
+    inspector = inspect(engine)
+    existing_tables = inspector.get_table_names()
+
+    if existing_tables:
+        with engine.begin() as connection:
+            for table_name in existing_tables:
+                connection.execute(
+                    text(f'DROP TABLE IF EXISTS "{table_name}" CASCADE')
+                )
+
     Base.metadata.create_all(bind=engine)
 
 
@@ -91,6 +102,7 @@ def _get_or_create_team(session, club_name: str, stats_counts: dict) -> Team:
         city=None,
         stadium=None,
         founded_year=None,
+        is_user_created=False,
     )
     session.add(team)
     session.flush()
