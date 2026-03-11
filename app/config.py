@@ -48,3 +48,8 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+psycopg2://postgres:postgres@localhost:5432/premier_league_analytics",
 )
+
+# Security defaults
+API_KEY = os.getenv("API_KEY", "premier-league-coursework-key")
+RATE_LIMIT_REQUESTS = _env_int("RATE_LIMIT_REQUESTS", 60)
+RATE_LIMIT_WINDOW_SECONDS = _env_int("RATE_LIMIT_WINDOW_SECONDS", 60)
