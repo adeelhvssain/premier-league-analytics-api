@@ -1,6 +1,6 @@
 """Application entrypoint for the FastAPI API."""
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import config
@@ -11,8 +11,9 @@ from .models.player_season_stats import PlayerSeasonStats
 from .models.team import Team
 from .routers.analytics import router as analytics_router
 from .routers.players import router as players_router
-from .routers.teams import router as teams_router
 from .routers.player_season_stats import router as player_season_stats_router
+from .routers.teams import router as teams_router
+from .security import get_api_key, rate_limit
 
 
 def create_app() -> FastAPI:
@@ -26,7 +27,7 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=config.FRONTEND_ORIGINS or ["*"],
         allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -52,10 +53,11 @@ def create_app() -> FastAPI:
         Base.metadata.create_all(bind=engine)
 
     # Extension point:
-    app.include_router(teams_router)
-    app.include_router(players_router)
-    app.include_router(player_season_stats_router)
-    app.include_router(analytics_router)
+    protected_dependencies = [Depends(get_api_key), Depends(rate_limit)]
+    app.include_router(teams_router, dependencies=protected_dependencies)
+    app.include_router(players_router, dependencies=protected_dependencies)
+    app.include_router(player_season_stats_router, dependencies=protected_dependencies)
+    app.include_router(analytics_router, dependencies=protected_dependencies)
 
     return app
 

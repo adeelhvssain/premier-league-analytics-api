@@ -27,6 +27,12 @@ def _env_int(name: str, default: int) -> int:
         return default
 
 
+def _env_list(name: str, default: str = "") -> list[str]:
+    """Parse comma-separated environment values into a list."""
+    raw = os.getenv(name, default)
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 # Read environment variables from `.env` when present.
 load_dotenv(BASE_DIR / ".env")
 
@@ -48,3 +54,12 @@ DATABASE_URL = os.getenv(
     "DATABASE_URL",
     "postgresql+psycopg2://postgres:postgres@localhost:5432/premier_league_analytics",
 )
+
+# Simple API key auth + in-memory rate limit settings.
+API_KEY = os.getenv("API_KEY", "change_me")
+RATE_LIMIT_REQUESTS = _env_int("RATE_LIMIT_REQUESTS", 60)
+RATE_LIMIT_WINDOW_SECONDS = _env_int("RATE_LIMIT_WINDOW_SECONDS", 60)
+
+# CORS (comma-separated list). Example:
+# FRONTEND_ORIGINS=http://localhost:5173,https://your-frontend.onrender.com
+FRONTEND_ORIGINS = _env_list("FRONTEND_ORIGINS", "http://127.0.0.1:5173,http://localhost:5173")

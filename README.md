@@ -56,6 +56,14 @@ Create `.env` from the template:
 cp .env.example .env
 ```
 
+Set at least these values in `.env`:
+
+```env
+DATABASE_URL=postgresql+psycopg2://<db_user>:<db_password>@localhost:5432/premier_league_analytics
+API_KEY=change_me
+FRONTEND_ORIGINS=http://127.0.0.1:5173,http://localhost:5173
+```
+
 ## 3. PostgreSQL setup
 
 Make sure PostgreSQL is running and create the database named `premier_league_analytics`.
@@ -66,7 +74,7 @@ Example commands (if PostgreSQL CLI tools are available):
 createdb premier_league_analytics
 ```
 
-Set `DATABASE_URL` in `.env`:
+`DATABASE_URL` format:
 
 ```env
 DATABASE_URL=postgresql+psycopg2://<db_user>:<db_password>@localhost:5432/premier_league_analytics
@@ -122,10 +130,58 @@ Frontend URL (default Vite):
 1. Open the frontend in your browser.
 2. Enter backend base URL:
    - `http://127.0.0.1:8000`
-3. Enter an API key value in the UI field:
+3. Enter your API key in the UI field:
    - The frontend always sends `X-API-Key`.
-   - If backend auth is disabled, any non-empty value is fine.
+   - This must match `API_KEY` in your backend environment.
 4. Click `Load Dashboard`.
+
+## Render deployment (Blueprint)
+
+This repo includes `render.yaml` for a simple Render setup with:
+
+- a FastAPI web service (`premier-league-analytics-api`)
+- a static React site (`premier-league-analytics-frontend`)
+- a PostgreSQL database (`premier-league-analytics-db`)
+
+### Deploy steps
+
+1. Push your repository to GitHub/GitLab.
+2. In Render, create a new Blueprint and select this repository.
+3. Render will detect `render.yaml` and create all three services.
+4. In Render dashboard, set required backend env vars:
+   - `API_KEY`
+   - `FRONTEND_ORIGINS`
+   - `RATE_LIMIT_REQUESTS` (optional, default `60`)
+   - `RATE_LIMIT_WINDOW_SECONDS` (optional, default `60`)
+   - `DATABASE_URL` is wired from the Render Postgres service automatically.
+5. Set frontend env var:
+   - `VITE_API_BASE_URL` = your backend Render URL (for example `https://premier-league-analytics-api.onrender.com`)
+
+### Production start command (backend)
+
+Render uses:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+### CORS note
+
+Backend CORS allowed origins are read from `FRONTEND_ORIGINS` (comma-separated), for example:
+
+```env
+FRONTEND_ORIGINS=https://premier-league-analytics-frontend.onrender.com
+```
+
+### Importing dataset on Render
+
+After deployment, the Render Postgres database is empty. Import your CSV by running:
+
+```bash
+python scripts/import_epl_20_21.py
+```
+
+You can run this as a one-off command in Render shell/job, or locally against the Render `DATABASE_URL`.
 
 ## Main backend endpoints
 

@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: premier-league-analytics-api
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: premier-league-analytics-db
+          property: connectionString
+      - key: FRONTEND_ORIGINS
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: RATE_LIMIT_REQUESTS
+        value: "60"
+      - key: RATE_LIMIT_WINDOW_SECONDS
+        value: "60"
+
+  - type: web
+    name: premier-league-analytics-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+
+databases:
+  - name: premier-league-analytics-db
+    databaseName: premier_league_analytics
+    plan: free
