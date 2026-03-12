@@ -33,7 +33,11 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    @app.get("/")
+    @app.get(
+        "/",
+        summary="API welcome",
+        description="Returns a welcome message and basic API metadata.",
+    )
     def root() -> dict[str, str]:
         """Basic health/info root route."""
         return {
@@ -42,7 +46,11 @@ def create_app() -> FastAPI:
             "version": config.APP_VERSION,
         }
 
-    @app.get("/health")
+    @app.get(
+        "/health",
+        summary="Health check",
+        description="Returns a simple service status and environment value.",
+    )
     def health() -> dict[str, str]:
         """Liveness endpoint for basic service checks."""
         return {"status": "ok", "environment": config.ENVIRONMENT}

@@ -19,16 +19,32 @@ from app.services.analytics import (
     get_top_xg,
 )
 
-router = APIRouter()
+router = APIRouter(tags=["Analytics"])
+COMMON_RESPONSES = {
+    401: {"description": "Missing or invalid API key."},
+    429: {"description": "Rate limit exceeded."},
+}
 
 
-@router.get("/analytics/top-scorers", response_model=list[TopScorerRow])
+@router.get(
+    "/analytics/top-scorers",
+    response_model=list[TopScorerRow],
+    summary="Top goal scorers",
+    description="Returns top goal scorers for the selected season.",
+    responses=COMMON_RESPONSES,
+)
 def top_scorers(season: str = "2020/21", limit: int = 10, db: Session = Depends(get_db)):
     """Top goalscorers for a season."""
     return get_top_scorers(db=db, season=season, limit=limit)
 
 
-@router.get("/analytics/top-assisters", response_model=list[TopAssisterRow])
+@router.get(
+    "/analytics/top-assisters",
+    response_model=list[TopAssisterRow],
+    summary="Top assist providers",
+    description="Returns top assist providers for the selected season.",
+    responses=COMMON_RESPONSES,
+)
 def top_assisters(
     season: str = "2020/21", limit: int = 10, db: Session = Depends(get_db)
 ):
@@ -36,13 +52,25 @@ def top_assisters(
     return get_top_assisters(db=db, season=season, limit=limit)
 
 
-@router.get("/analytics/top-xg", response_model=list[TopXGRow])
+@router.get(
+    "/analytics/top-xg",
+    response_model=list[TopXGRow],
+    summary="Top expected goals (xG)",
+    description="Returns players with highest xG for the selected season.",
+    responses=COMMON_RESPONSES,
+)
 def top_xg(season: str = "2020/21", limit: int = 10, db: Session = Depends(get_db)):
     """Top xG performers for a season."""
     return get_top_xg(db=db, season=season, limit=limit)
 
 
-@router.get("/analytics/discipline", response_model=list[DisciplineRow])
+@router.get(
+    "/analytics/discipline",
+    response_model=list[DisciplineRow],
+    summary="Discipline leaderboard",
+    description="Returns players with most cards for the selected season.",
+    responses=COMMON_RESPONSES,
+)
 def discipline(
     season: str = "2020/21", limit: int = 10, db: Session = Depends(get_db)
 ):
@@ -50,7 +78,13 @@ def discipline(
     return get_top_discipline(db=db, season=season, limit=limit)
 
 
-@router.get("/analytics/club-summary/{team_id}", response_model=ClubSummaryResponse)
+@router.get(
+    "/analytics/club-summary/{team_id}",
+    response_model=ClubSummaryResponse,
+    summary="Club summary",
+    description="Returns aggregated season totals for one club.",
+    responses={**COMMON_RESPONSES, 404: {"description": "Team not found."}},
+)
 def club_summary(team_id: int, season: str = "2020/21", db: Session = Depends(get_db)):
     """Season club summary totals."""
     try:

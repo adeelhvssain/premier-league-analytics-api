@@ -13,6 +13,18 @@ Notes:
 - The dashboard requires an API key (`X-API-Key`). Ask the maintainer for the current key.
 - Render free services can spin down when idle, so the first request may take a short time.
 
+## API Documentation
+
+The API documentation generated from Swagger UI is available in:
+
+- `docs/api_documentation.pdf`
+- `docs/api-auth-doc.pdf`
+
+Interactive documentation is available when the API is running:
+
+- Local: `http://127.0.0.1:8000/docs`
+- Deployed: `https://premier-league-analytics-api-test.onrender.com/docs`
+
 ## What this project includes
 
 - Backend:
