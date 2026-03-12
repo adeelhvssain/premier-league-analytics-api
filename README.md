@@ -2,6 +2,17 @@
 
 FastAPI + PostgreSQL backend with a React (Vite) frontend for Premier League player-season analytics based on the `EPL_20_21.csv` dataset.
 
+## Live deployment
+
+- Frontend (Render): `https://premier-league-analytics-frontend-test.onrender.com`
+- Backend API (Render): `https://premier-league-analytics-api-test.onrender.com`
+- Backend docs (Swagger): `https://premier-league-analytics-api-test.onrender.com/docs`
+
+Notes:
+
+- The dashboard requires an API key (`X-API-Key`). Ask the maintainer for the current key.
+- Render free services can spin down when idle, so the first request may take a short time.
+
 ## What this project includes
 
 - Backend:
@@ -155,7 +166,7 @@ This repo includes `render.yaml` for a simple Render setup with:
    - `RATE_LIMIT_WINDOW_SECONDS` (optional, default `60`)
    - `DATABASE_URL` is wired from the Render Postgres service automatically.
 5. Set frontend env var:
-   - `VITE_API_BASE_URL` = your backend Render URL (for example `https://premier-league-analytics-api.onrender.com`)
+   - `VITE_API_BASE_URL` = your backend Render URL (for example `https://premier-league-analytics-api-test.onrender.com`)
 
 ### Production start command (backend)
 
@@ -181,7 +192,11 @@ After deployment, the Render Postgres database is empty. Import your CSV by runn
 python scripts/import_epl_20_21.py
 ```
 
-You can run this as a one-off command in Render shell/job, or locally against the Render `DATABASE_URL`.
+If Render shell is unavailable on your plan, run import locally against the Render external DB URL:
+
+```bash
+DATABASE_URL='your_render_external_db_url_here' python scripts/import_epl_20_21.py
+```
 
 ## Main backend endpoints
 
